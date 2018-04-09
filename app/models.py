@@ -23,12 +23,22 @@ class Section(db.Document):
     name = db.StringField(required=True)
 
 
+class Project(db.Document):
+    """
+    Project model
+    """
+    created_at = db.DateTimeField(default=datetime.now())
+    campus = db.ReferenceField(Campus, required=True)
+    name = db.StringField(required=True)
+
+
 class User(db.Document):
     """
     User model
     """
     created_at = db.DateTimeField(default=datetime.now())
     campus = db.ReferenceField(Campus, required=True)
+    section = db.ReferenceField(Section)
     type = db.StringField(required=True)
     username = db.StringField(required=True, unique=True)
     img_uri = db.StringField()
