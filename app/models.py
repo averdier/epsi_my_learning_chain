@@ -67,3 +67,14 @@ class User(db.Document):
             'img_uri': self.img_uri,
             'scopes': self.scopes
         }
+
+
+class Group(db.Document):
+    """
+    Group model
+    """
+    created_at = db.DateTimeField(default=datetime.now())
+    project = db.ReferenceField(Project, required=True)
+    name = db.StringField(required=True)
+    users = db.ListField(db.ReferenceField(User))
+    seed = db.StringField(required=True)

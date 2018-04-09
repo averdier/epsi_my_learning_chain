@@ -70,6 +70,7 @@ from .endpoints.auth import ns as auth_namespace
 from .endpoints.campus import ns as campus_namespace
 from .endpoints.sections import ns as sections_namespace
 from .endpoints.projects import ns as project_namespace
+from .endpoints.groups import ns as groups_namespace
 from .endpoints.users import ns as users_namespace
 
 if config_name != 'production':
@@ -80,4 +81,5 @@ api.add_namespace(auth_namespace)
 api.add_namespace(campus_namespace)
 api.add_namespace(sections_namespace)
 api.add_namespace(project_namespace)
+api.add_namespace(groups_namespace)
 api.add_namespace(users_namespace)
