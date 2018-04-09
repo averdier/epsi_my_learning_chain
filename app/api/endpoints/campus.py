@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask import request
+from flask import request, g
 from flask_restplus import Namespace, Resource, abort
 from .. import auth
 from ..serializers.campus import campus_resource, campus_container, campus_post_model, campus_put_model
@@ -72,6 +72,9 @@ class CampusItem(Resource):
         data = request.json
 
         c = Campus.objects.get_or_404(id=id)
+        if c != g.client.campus:
+            abort(400, error='Not authorized')
+
         cs = Campus.objects(name=data['name']).first()
 
         if cs is not None and cs.id != c:
@@ -88,6 +91,10 @@ class CampusItem(Resource):
         Delete campus
         """
         c = Campus.objects.get_or_404(id=id)
+
+        if c != g.client.campus:
+            abort(400, error='Not authorized')
+
         c.delete()
 
         return 'Campus successfully deleted', 204

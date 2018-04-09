@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask import request
+from flask import request, g
 from flask_restplus import Namespace, Resource, abort
 from .. import auth
 from ..serializers.users import user_resource, user_full_resource, user_container, user_post_model
@@ -48,12 +48,11 @@ class UserCollection(Resource):
         if data['type'] not in ['admin', 'etu', 'int']:
             abort(400, error='Unknown user type.')
 
-        campus = Campus.objects.get_or_404(id=data['campus'])
         if User.objects(username=data['username']).count():
             abort(400, error='Username already exist.')
 
         u = User(
-            campus=campus,
+            campus=g.client.campus,
             type=data['type'],
             username=data['username'],
             img_uri=data.get('img_uri')
@@ -87,6 +86,9 @@ class UserItem(Resource):
         data = request.json
 
         u = User.objects.get_or_404(id=id)
+        if u.campus != g.client.campus:
+            abort(400, error='Not authorized')
+
         if len(data) == 0:
             abort(400, error='No data')
 
@@ -107,6 +109,9 @@ class UserItem(Resource):
         """
         u = User.objects.get_or_404(id=id)
 
+        if u.campus != g.client.campus:
+            abort(400, error='Not authorized')
+
         u.delete()
 
         return 'User successfully deleted.', 204
@@ -122,6 +127,9 @@ class UserItemFull(Resource):
         """
         Return user
         """
+        if g.client.type != 'admin':
+            abort(400, error='Not authorized')
+
         u = User.objects.get_or_404(id=id)
 
         return u

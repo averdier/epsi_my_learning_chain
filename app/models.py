@@ -9,8 +9,18 @@ class Campus(db.Document):
     """
     Campus model
     """
-    created_at = db.DateTimeField(default=datetime.now())
+    created_at = db.DateTimeField(default=datetime.now(), required=True)
     name = db.StringField(required=True, unique=True)
+
+
+class Section(db.Document):
+    """
+    Section model
+    """
+    created_at = db.DateTimeField(default=datetime.now())
+    campus = db.ReferenceField(Campus, required=True)
+    year = db.IntField(required=True)
+    name = db.StringField(required=True)
 
 
 class User(db.Document):

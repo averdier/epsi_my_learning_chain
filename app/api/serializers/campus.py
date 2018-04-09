@@ -10,7 +10,7 @@ campus_post_model = api.model('Campus POST model', {
 
 campus_put_model = api.inherit('Campus PUT model', campus_post_model, {})
 
-campus_resource = api.model('Campus resource', {
+campus_resource = api.model('Campus resource model', {
     'id': fields.String(required=True, description='Campus ID'),
     'name': fields.String(required=True, description='Campus name')
 })
