@@ -1,0 +1,1 @@
+docker build -t learning_back -f ./docker/Dockerfile .
