@@ -19,7 +19,11 @@ def create_app(config_name='default'):
     from .auth import blueprint as auth_blueprint
 
     app = Flask(__name__)
-    CORS(app, resources={r"/api/*": {"origins": "*"}})
+    CORS(app, resources={
+        r"/api/*": {"origins": "*"},
+        r"/pub/*": {"origins": "*"},
+        r"/admin/*": {"origins": "*"},
+    })
 
     app.config.from_object(config[config_name])
     app.config.from_envvar('APP_SETTINGS', silent=True)
