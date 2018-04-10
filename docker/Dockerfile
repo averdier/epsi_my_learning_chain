@@ -8,3 +8,4 @@ ADD ./runserver.py /
 ADD ./wsgi.py /
 ADD ./create_db.py /
 ADD ./app /app/
+ADD ./utils /utils/
