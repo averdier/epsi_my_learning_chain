@@ -10,7 +10,8 @@ facilitator_post_model = api.model('Facilitator POST model', {
     'username': fields.String(required=True, min_length=6, description='Username'),
     'email': fields.String(required=True, description='Email address'),
     'secret': fields.String(required=True, min=6, description='Secret'),
-    'img_uri': fields.String(required=False, description='Img uri')
+    'img_uri': fields.String(required=False, description='Img uri'),
+    'scopes': fields.List(fields.String(), required=True, description='Scopes')
 })
 
 facilitator_patch_model = api.model('Facilitator PATCH model', {
@@ -18,7 +19,8 @@ facilitator_patch_model = api.model('Facilitator PATCH model', {
     'last_name': fields.String(required=False, min_length=4, description='Last name'),
     'email': fields.String(required=False, description='Email address'),
     'secret': fields.String(required=False, min=6, description='Secret'),
-    'img_uri': fields.String(required=False, description='Img uri')
+    'img_uri': fields.String(required=False, description='Img uri'),
+    'scopes': fields.List(fields.String(), required=False, description='Scopes')
 })
 
 facilitator_minimal_model = api.model('Facilitator minimal model', {
@@ -29,7 +31,8 @@ facilitator_minimal_model = api.model('Facilitator minimal model', {
 })
 
 facilitator_model = api.inherit('Facilitator model', facilitator_minimal_model, {
-    'email': fields.String(required=True, description='Email')
+    'email': fields.String(required=True, description='Email'),
+    'scopes': fields.List(fields.String(), required=True, description='Scopes')
 })
 
 facilitator_full_model = api.inherit('Facilitator full model', {

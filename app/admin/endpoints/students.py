@@ -45,18 +45,20 @@ class StudentCollection(Resource):
         if User.objects(email=data['email']).count() > 0:
             abort(400, error='Email already exist')
 
-        s = Student(
-            campus=c,
-            section=sc,
-            first_name=data['first_name'],
-            last_name=data['last_name'],
-            email=data['email'],
-            username=data['username'],
-            img_uri=data.get('img_uri')
-        )
+        s = Student()
+        s.campus = c
+        s.section = sc
+        s.first_name = data['first_name']
+        s.last_name = data['last_name']
+        s.email = data['email']
+        s.username = data['username']
+        s.img_uri = data.get('img_uri')
+        s.scopes = data['scopes']
+
         s.secret = data['secret']
 
         return s
+
 
 @ns.route('/<id>')
 @ns.response(404, 'Student not found')
@@ -101,6 +103,9 @@ class StudentItem(Resource):
 
         if data['secret']:
             s.secret = data['secret']
+
+        if data['scopes']:
+            s.scopes = data['scopes']
 
         s.save()
 

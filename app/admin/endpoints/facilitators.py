@@ -46,15 +46,13 @@ class FacilitatorCollection(Resource):
         if Facilitator.objects(email=data['email']).count() > 0:
             abort(400, error='Email already exist')
 
-        f = Facilitator(
-            first_name=data['first_name'],
-            last_name=data['last_name'],
-            email=data['email'],
-            username=data['username'],
-            seed=generate_seed(),
-            img_uri=data.get('img_uri')
-        )
-        f.secret = data['secret']
+        f = Facilitator()
+        f.first_name = data['first_name']
+        f.last_name = data['last_name']
+        f.email = data['email']
+        f.username = data['username']
+        f.img_uri = data.get('img_uri')
+        f.scopes = data['scopes']
 
         f.get_transfers()
 
@@ -105,6 +103,9 @@ class FacilitatorItem(Resource):
 
         if data['secret']:
             f.secret = data['secret']
+
+        if data['scopes']:
+            f.scopes = data['scopes']
 
         f.save()
 

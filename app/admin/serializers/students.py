@@ -20,7 +20,8 @@ student_minimal_model = api.model('Student minimal model', {
 })
 
 student_model = api.inherit('Student model', student_minimal_model, {
-    'email': fields.String(required=True, description='Email')
+    'email': fields.String(required=True, description='Email'),
+    'scopes': fields.List(fields.String(), required=True, description='Scopes')
 })
 
 student_container = api.model('Student container', {

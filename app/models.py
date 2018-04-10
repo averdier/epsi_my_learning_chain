@@ -222,6 +222,9 @@ class Facilitator(User, IOTAAccount):
     """
     Facilitator model
     """
+    def __init__(self):
+        super().__init__()
+        self.type = 'facilitator'
 
 
 class Student(User):
