@@ -19,7 +19,7 @@ group_minimal_model = api.model('Group minimal model', {
     'id': fields.String(required=True, description='Group ID'),
     'project_id': fields.String(required=True, description='Project ID', attribute=lambda p: p.project.id),
     'name': fields.String(required=True, description='Name'),
-    'students_count': fields.Integer(required=True, description='User count', attribute=lambda p: len(p.users))
+    'students_count': fields.Integer(required=True, description='User count', attribute=lambda p: len(p.students))
 })
 
 group_model = api.inherit('Group model', group_minimal_model, {
