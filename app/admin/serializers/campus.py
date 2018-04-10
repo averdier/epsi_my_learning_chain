@@ -19,7 +19,7 @@ campus_minimal_model = api.model('Campus minimal model', {
     'name': fields.String(required=True, description='Campus name')
 })
 
-campus_model = api.inherit('Campus model', {
+campus_model = api.inherit('Campus model', campus_minimal_model, {
     'description': fields.String(required=True, description='Campus description')
 })
 
