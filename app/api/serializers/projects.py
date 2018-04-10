@@ -3,9 +3,6 @@
 from flask_restplus import fields
 from .. import api
 
-project_post_model = api.model('Project POST model', {
-    'name': fields.String(required=True, min_length=6, description='Project name')
-})
 
 project_resource_model = api.model('Project resource model', {
     'id': fields.String(required=True, description='Project ID'),

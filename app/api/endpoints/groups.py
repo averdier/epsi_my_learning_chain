@@ -3,8 +3,8 @@
 from flask import request, g
 from flask_restplus import Namespace, Resource, abort
 from .. import auth
-from ..serializers.groups import group_resource_model, group_container, group_post_model
-from app.models import Group, Project, User
+from ..serializers.groups import group_container, group_model
+from app.models import Group, Project
 
 ns = Namespace('groups', description='Groups related operations')
 
@@ -27,42 +27,11 @@ class GroupCollection(Resource):
         """
         Return Groups
         """
+        if g.client.campus is None:
+            abort(400, error='You must have campus')
+
         prjs = Project.objects(campus=g.client.campus)
         return {'groups': [gr for gr in Group.objects(project__in=prjs)]}
-
-    @ns.marshal_with(group_resource_model)
-    @ns.expect(group_post_model)
-    def post(self):
-        """
-        Add Group
-        """
-        data = request.json
-
-        p = Project.objects.get_or_404(id=data['project'])
-
-        if p.campus != g.client.campus:
-            abort(400, error='Not authorized')
-
-        if Group.objects(project=p, name=data['name']).count() > 0:
-            abort(400, error='Group name already exist')
-
-        gr = Group(
-            project=p,
-            name=data['name'],
-            seed=''
-        )
-
-        for u_id in data.get('users', []):
-            u = User.objects.get_or_404(id=u_id)
-
-            if u.campus != g.client.campus:
-                abort(400, error='Not authorized')
-
-            gr.users.append(u)
-
-        gr.save()
-
-        return gr
 
 
 @ns.route('/<id>')
@@ -70,28 +39,17 @@ class GroupCollection(Resource):
 class GroupItem(Resource):
     decorators = [auth.login_required]
 
-    @ns.marshal_with(group_resource_model)
+    @ns.marshal_with(group_model)
     def get(self, id):
         """
         Return Group
         """
+        if g.client.campus is None:
+            abort(400, error='You must have campus')
+
         gr = Group.objects.get_or_404(id=id)
 
         if gr.project.campus != g.client.campus:
             abort(400, error='Not authorized')
 
         return gr
-
-    @ns.response(204, 'Group successfully deleted.')
-    def delete(self, id):
-        """
-        Delete Group
-        """
-        gr = Group.objects.get_or_404(id=id)
-
-        if gr.project.campus != g.client.campus:
-            abort(400, error='Not authorized')
-
-        gr.delete()
-
-        return 'Group successfully deleted', 204

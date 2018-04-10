@@ -14,6 +14,8 @@ class Config:
     MONGODB_HOST = ''
     MONGODB_CONNECT = False
 
+    IOTA_HOST = ""
+
     RESTPLUS_SWAGGER_UI_DOC_EXPANSION = 'list'
     RESTPLUS_VALIDATE = True
     RESTPLUS_MASK_SWAGGER = False

@@ -17,11 +17,11 @@ conf = ConfigObj(conf_path)
 config_name = conf.get('CONFIG', 'default')
 
 
-blueprint = Blueprint('api', __name__, url_prefix='/api')
+blueprint = Blueprint('public', __name__, url_prefix='/pub')
 api = Api(blueprint,
           title='My Learning Chain',
           version='0.1',
-          description='Python learning chain backend',
+          description='Python authorization learning chain backend',
           authorizations={
               'tokenKey': {
                   'type': 'apiKey',
@@ -35,7 +35,6 @@ api = Api(blueprint,
 
 
 auth = HTTPTokenAuth(scheme='Bearer')
-
 
 @auth.verify_token
 def verify_token(token):
@@ -66,16 +65,10 @@ def verify_token(token):
         return False
 
 
-from .endpoints.campus import ns as campus_namespace
-from .endpoints.sections import ns as sections_namespace
-from .endpoints.projects import ns as project_namespace
-from .endpoints.groups import ns as groups_namespace
+from .endpoints.auth import ns as auth_namespace
 
 if config_name != 'production':
     from .endpoints.postman import ns as postman_namespace
     api.add_namespace(postman_namespace)
 
-api.add_namespace(campus_namespace)
-api.add_namespace(sections_namespace)
-api.add_namespace(project_namespace)
-api.add_namespace(groups_namespace)
+api.add_namespace(auth_namespace)

@@ -1,23 +1,25 @@
 # -*- coding: utf-8 -*-
 
 from flask_restplus import fields
-from .nested import project_nested, campus_nested, user_nested, api
+from .nested import project_nested, campus_nested, student_nested, api
 
-group_post_model = api.model('Group POST model', {
-    'project': fields.String(required=True, description='Project ID'),
-    'name': fields.String(required=True, min_length=6, description='Group name'),
-    'users': fields.List(fields.String(), required=False, description='Users ID list')
+
+group_minimal_model = api.model('Group minimal model', {
+    'id': fields.String(required=True, description='Group ID'),
+    'name': fields.String(required=True, description='Group name'),
+    'project_id': fields.String(required=True, description='Group project', attribute=lambda g: g.project.id),
+    'students_count': fields.Integer(required=True, description='User count', attribute=lambda g: len(g.students))
 })
 
-group_resource_model = api.model('Group resource model', {
+group_model = api.inherit('Group resource model', group_minimal_model, {
     'id': fields.String(required=True, description='Group ID'),
     'name': fields.String(required=True, description='Group name'),
     'project': fields.Nested(project_nested, required=True, description='Group project'),
     'campus': fields.Nested(campus_nested, attribute=lambda g: g.project.campus, description='Group campus'),
-    'users': fields.List(fields.Nested(user_nested), required=True, description='Group users')
+    'students': fields.List(fields.Nested(student_nested), required=True, description='Students list')
 })
 
 group_container = api.model('Group container', {
-    'groups': fields.List(fields.Nested(group_resource_model), required=True, description='Groups list')
+    'groups': fields.List(fields.Nested(group_minimal_model), required=True, description='Groups list')
 })
 

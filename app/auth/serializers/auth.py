@@ -2,8 +2,22 @@
 
 from flask_restplus import fields
 from .. import api
-from .users import user_full_resource
 
+campus_nested = api.model('Campus nested', {
+    'id': fields.String(required=True, description='Campus ID'),
+    'name': fields.String(required=True, description='Name')
+})
+
+user_resource = api.model('User resource', {
+    'id': fields.String(required=True, description='User ID'),
+    'type': fields.String(required=True, description='Type'),
+    'campus': fields.Nested(campus_nested, required=True, allow_null=True, description='Campus'),
+    'username': fields.String(required=True, description='Username')
+})
+
+user_full_resource = api.inherit('User full resource', user_resource, {
+    'scopes': fields.List(fields.String(), required=True, description='User scopes')
+})
 
 jwks_model = api.model('jwks.json model', {
     'alg': fields.String(required=True, description='Algorithm'),

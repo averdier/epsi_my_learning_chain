@@ -9,12 +9,6 @@ campus_nested = api.model('Campus nested', {
     'name': fields.String(required=True, description='Campus name')
 })
 
-project_nested = api.model('Project nested', {
-    'id': fields.String(required=True, description='Project ID'),
-    'name': fields.String(required=True, description='Project name')
-})
-
-
 student_nested = api.model('Student nested', {
     'id': fields.String(required=True, description='Student ID'),
     'first_name': fields.String(required=True, description='First name'),

@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 
 from runserver import app
+from utils.iota import generate_seed
 
 with app.test_request_context():
-    from app.models import User, Campus
+    from app.models import User, Campus, IOTAAddress
+
+    IOTAAddress.objects()
 
     if Campus.objects(name='Arras').count() == 0:
-        c = Campus(name='Arras')
+        c = Campus(name='Arras', seed=generate_seed())
         c.save()
 
     else:
@@ -14,7 +17,6 @@ with app.test_request_context():
 
     if User.objects(username='averdier').count() == 0:
         u = User(
-            campus=c,
             username='averdier',
             type='admin'
         )
