@@ -213,12 +213,12 @@ class OfferClaimItem(Resource):
 
         if data['status'] == 'validated':
             make_transfer(current_app.config['IOTA_HOST'], {
-                'recipient_address': o.facilitator.deposit_address,
+                'recipient_address': o.facilitator.deposit_address.address,
                 'message': 'From EPSI',
                 'tag': 'OFFERVALIDATED',
                 'value': o.price,
                 'seed': c.group.seed,
-                'deposit_address': c.group.deposit_address
+                'deposit_address': c.group.deposit_address.address
             })
             c.group.reserved -= o.price
             c.group.save()
