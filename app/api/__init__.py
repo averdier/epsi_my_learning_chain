@@ -70,6 +70,7 @@ from .endpoints.campus import ns as campus_namespace
 from .endpoints.sections import ns as sections_namespace
 from .endpoints.projects import ns as project_namespace
 from .endpoints.groups import ns as groups_namespace
+from .endpoints.offers import ns as offers_namespace
 
 if config_name != 'production':
     from .endpoints.postman import ns as postman_namespace
@@ -79,3 +80,4 @@ api.add_namespace(campus_namespace)
 api.add_namespace(sections_namespace)
 api.add_namespace(project_namespace)
 api.add_namespace(groups_namespace)
+api.add_namespace(offers_namespace)

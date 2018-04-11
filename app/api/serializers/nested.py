@@ -21,3 +21,5 @@ student_nested = api.model('Student nested', {
     'last_name': fields.String(required=True, description='First name'),
     'img_uri': fields.String(required=True, description='Img uri')
 })
+
+facilitator_nested = api.inherit('Facilitator model', student_nested, {})
