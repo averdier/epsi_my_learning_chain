@@ -54,7 +54,7 @@ class StudentCollection(Resource):
             last_name=data['last_name'],
             username=data['username'],
             img_uri=data.get('img_uri'),
-            scopes=data.get('scopes')
+            scopes=data.get('scopes', [''])
         )
 
         s.secret = data['secret']
