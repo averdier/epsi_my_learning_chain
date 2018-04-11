@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from flask import request, g
+from flask import request, g, current_app
 from flask_restplus import Namespace, Resource, abort
 from .. import auth
 from ..serializers.offers import offer_container, offer_post_model, offer_patch_model, offer_model
 from ..serializers.claims import claim_container, claim_model, claim_post_model, claim_put_model
 from app.models import Offer, Claim, Group
+from utils.iota import make_transfer
 
 ns = Namespace('offers', description='Offers related operations')
 
@@ -193,6 +194,9 @@ class OfferClaimItem(Resource):
         if c.offer.id != o.id:
             abort(400, error='Impossible')
 
+        if c.offer.facilitator.id != g.client.id:
+            abort(400, error='Not authorized')
+
         data = request.json
 
         if data['status'] not in ['running', 'canceled', 'validated']:
@@ -201,6 +205,16 @@ class OfferClaimItem(Resource):
         if data['status'] == 'canceled':
             c.group.reserved -= o.price
             c.group.save()
+
+        if data['status'] == 'validated':
+            make_transfer(current_app.config['IOTA_HOST'], {
+                'recipient_address': o.facilitator.deposit_address,
+                'message': 'From EPSI',
+                'tag': 'OFFERVALIDATED',
+                'value': o.price,
+                'seed': g.group.seed,
+                'deposit_address': c.group.deposit_address
+            })
 
         c.status = data['status']
 

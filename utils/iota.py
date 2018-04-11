@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from iota import Iota, Address
+from iota import Iota, Address, ProposedTransaction, TryteString, Tag
 import secrets
 import string
 
@@ -88,3 +88,27 @@ def address_balance(iota_node, address):
     gna_result = api.get_balances([address])
     balance = gna_result['balances']
     return balance[0]
+
+
+def make_transfer(iota_node, args):
+    """
+    Make transfers
+
+    :param iota_node:
+    :param args:
+    :return:
+    """
+    txn = [ProposedTransaction(
+        address=Address(Address(bytes(args['recipient_address']))),
+        message=TryteString.from_string(args['message']),
+        tag=Tag(args['tag']),
+        value=args['value']
+    )]
+    api = Iota(iota_node, args['seed'])
+    r = api.send_transfer(
+        depth=7,
+        transfers=txn,
+        change_address=Address(bytes(args['deposit_address'])),
+        min_weight_magnitude=13
+    )
+    print(r)
