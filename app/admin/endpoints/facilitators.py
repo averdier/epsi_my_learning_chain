@@ -3,7 +3,7 @@
 from flask import request, current_app
 from flask_restplus import Namespace, Resource, abort
 from .. import auth
-from ..serializers.facilitators import facilitator_container, facilitator_full_model, facilitator_model, \
+from ..serializers.facilitators import facilitator_container, facilitator_full_model, \
     facilitator_patch_model, facilitator_post_model
 from app.models import Facilitator
 from utils.iota import generate_seed
