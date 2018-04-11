@@ -49,6 +49,7 @@ class StudentCollection(Resource):
         s = Student()
         s.campus = c
         s.section = sc
+        s.type = 'student'
         s.first_name = data['first_name']
         s.last_name = data['last_name']
         s.email = data['email']

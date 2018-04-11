@@ -222,9 +222,6 @@ class Facilitator(User, IOTAAccount):
     """
     Facilitator model
     """
-    def __init__(self):
-        super().__init__()
-        self.type = 'facilitator'
 
 
 class Student(User):
@@ -233,10 +230,6 @@ class Student(User):
     """
     campus = db.ReferenceField(Campus, required=True)
     section = db.ReferenceField(Section, required=True)
-
-    def __init__(self):
-        super().__init__()
-        self.type = 'student'
 
 
 class Group(IOTAAccount):

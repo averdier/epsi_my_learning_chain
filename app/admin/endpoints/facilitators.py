@@ -47,6 +47,7 @@ class FacilitatorCollection(Resource):
             abort(400, error='Email already exist')
 
         f = Facilitator()
+        f.type = 'facilitator'
         f.first_name = data['first_name']
         f.last_name = data['last_name']
         f.email = data['email']
@@ -56,6 +57,8 @@ class FacilitatorCollection(Resource):
         f.seed = generate_seed()
 
         f.get_transfers()
+
+        f.save()
 
         return f
 
