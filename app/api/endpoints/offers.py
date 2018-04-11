@@ -42,7 +42,7 @@ class OfferCollection(Resource):
         if g.client.type != 'facilitator':
             abort(400, error='You must be facilitator')
 
-        f = Facilitator.objects.get_or_404(g.client.id)
+        f = Facilitator.objects.get_or_404(id=g.client.id)
 
         if Offer.objects(name=data['name']).count() > 0:
             abort(400, error='Name already exist')
