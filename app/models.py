@@ -202,7 +202,7 @@ class User(db.Document):
     email = db.StringField()
     username = db.StringField(required=True, unique=True)
     secret_hash = db.StringField()
-    scopes = db.ListField(db.StringField)
+    scopes = db.ListField(db.StringField())
 
     @property
     def secret(self):
