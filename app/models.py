@@ -246,3 +246,15 @@ class Group(IOTAAccount):
     project = db.ReferenceField(Project, required=True)
     name = db.StringField(required=True)
     students = db.ListField(db.ReferenceField(Student))
+
+
+class Offer(db.Document):
+    """
+    Offer model
+    """
+    created_at = db.DateTimeField(default=datetime.now())
+    facilitator = db.ReferenceField(Facilitator)
+    name = db.StringField(required=True, unique=True)
+    tags = db.ListField(db.StringField())
+    price = db.IntField(required=True, default=0)
+    description = db.StringField()

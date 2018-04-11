@@ -53,6 +53,7 @@ class FacilitatorCollection(Resource):
         f.username = data['username']
         f.img_uri = data.get('img_uri')
         f.scopes = data['scopes']
+        f.seed = generate_seed()
 
         f.get_transfers()
 

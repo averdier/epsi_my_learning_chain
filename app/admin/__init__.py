@@ -72,6 +72,7 @@ from .endpoints.facilitators import ns as facilitators_namespace
 from .endpoints.students import ns as students_namespace
 from .endpoints.projects import ns as projects_namespace
 from .endpoints.groups import ns as groups_namespace
+from .endpoints.facilitators import ns as facilitators_namespace
 
 if config_name != 'production':
     from .endpoints.postman import ns as postman_namespace
@@ -82,5 +83,6 @@ api.add_namespace(sections_namespace)
 api.add_namespace(facilitators_namespace)
 api.add_namespace(students_namespace)
 api.add_namespace(projects_namespace)
+api.add_namespace(facilitators_namespace)
 api.add_namespace(groups_namespace)
 
