@@ -5,7 +5,8 @@ from flask_restplus import Namespace, Resource, abort
 from .. import auth
 from ..serializers.offers import offer_container, offer_post_model, offer_patch_model, offer_model
 from ..serializers.claims import claim_container, claim_model, claim_post_model, claim_put_model
-from app.models import Offer, Claim, Group, Facilitator
+from ..serializers.messages import message_container, message_post_model, message_minimal_model
+from app.models import Offer, Claim, Group, Facilitator, Message
 from utils.iota import make_transfer
 
 ns = Namespace('offers', description='Offers related operations')
@@ -247,3 +248,45 @@ class OfferClaimItem(Resource):
         c.delete()
 
         return 'Claim successfully deleted', 204
+
+
+@ns.route('/<id>/claims/<cid>/messages')
+@ns.response(404, 'Claim not found')
+class OfferClaimMessage(Resource):
+    decorators = [auth.login_required]
+
+    @ns.marshal_with(message_container)
+    def get(self, id, cid):
+        """
+        Get messages
+        """
+        o = Offer.objects.get_or_404(id=id)
+        c = Claim.objects.get_or_404(id=cid)
+
+        if c.offer.id != o.id:
+            abort(400, error='Impossible')
+
+        return {'messages': [m for m in Message.objects(claim=c)]}
+
+    @ns.marshal_with(message_minimal_model)
+    @ns.expect(message_post_model)
+    def post(self, id, cid):
+        """
+        Add message
+        """
+        o = Offer.objects.get_or_404(id=id)
+        c = Claim.objects.get_or_404(id=cid)
+
+        if c.offer.id != o.id:
+            abort(400, error='Impossible')
+
+        data = request.json
+
+        m = Message(
+            claim=c,
+            user=g.client,
+            content=data['content']
+        )
+        m.save()
+
+        return m

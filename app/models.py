@@ -276,3 +276,13 @@ class Claim(db.Document):
     offer = db.ReferenceField(Offer, required=True)
     group = db.ReferenceField(Group)
     status = db.StringField(required=True)
+
+
+class Message(db.Document):
+    """
+    Message model
+    """
+    created_at = db.DateTimeField(default=datetime.now())
+    claim = db.ReferenceField(Claim, required=True)
+    user = db.ReferenceField(User, required=True)
+    content = db.StringField(required=True)
