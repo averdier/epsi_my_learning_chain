@@ -98,8 +98,8 @@ class StudentItem(Resource):
             s.last_name = data['last_name']
 
         if data.get('email'):
-            us = User.objects(email=data['email']).first()
-            if us is not None and us.id != id:
+            us = Student.objects(email=data['email']).first()
+            if us is not None and us.id != s.id:
                 abort(400, error='Email already exist')
 
             s.email = data['email']
