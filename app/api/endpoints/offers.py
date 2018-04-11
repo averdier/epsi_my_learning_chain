@@ -147,6 +147,9 @@ class OfferClaimCollection(Resource):
 
         gr = Group.objects.get_or_404(id=data['group'])
 
+        if gr.balance < o.price:
+            abort(400, error='No founds')
+
         c = Claim(
             offer=o,
             group=gr,

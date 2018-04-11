@@ -31,6 +31,7 @@ facilitator_minimal_model = api.model('Facilitator minimal model', {
 })
 
 facilitator_model = api.inherit('Facilitator model', facilitator_minimal_model, {
+    'username': fields.String(required=True, description='Username'),
     'email': fields.String(required=True, description='Email'),
     'scopes': fields.List(fields.String(), required=True, description='Scopes')
 })
