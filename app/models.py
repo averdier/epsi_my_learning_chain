@@ -188,6 +188,13 @@ class Project(db.Document):
     campus = db.ReferenceField(Campus, required=True)
     name = db.StringField(required=True)
 
+    @property
+    def groups(self):
+        """
+        Groups
+        """
+        return Group.objects(project=self)
+
 
 class User(db.Document):
     """
