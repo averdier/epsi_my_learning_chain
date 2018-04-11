@@ -35,7 +35,7 @@ facilitator_model = api.inherit('Facilitator model', facilitator_minimal_model, 
     'scopes': fields.List(fields.String(), required=True, description='Scopes')
 })
 
-facilitator_full_model = api.inherit('Facilitator full model', {
+facilitator_full_model = api.inherit('Facilitator full model', facilitator_model, {
     'balance': fields.Integer(required=True, description='Facilitator balance'),
     'deposit_address': fields.Nested(iota_address_model, required=True, description='Facilitator deposit address')
 })
