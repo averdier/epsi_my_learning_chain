@@ -214,7 +214,7 @@ class OfferClaimItem(Resource):
                 'message': 'From EPSI',
                 'tag': 'OFFERVALIDATED',
                 'value': o.price,
-                'seed': g.group.seed,
+                'seed': c.group.seed,
                 'deposit_address': c.group.deposit_address
             })
             c.group.reserved -= o.price
