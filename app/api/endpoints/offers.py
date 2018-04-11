@@ -5,7 +5,7 @@ from flask_restplus import Namespace, Resource, abort
 from .. import auth
 from ..serializers.offers import offer_container, offer_post_model, offer_patch_model, offer_model
 from ..serializers.claims import claim_container, claim_model, claim_post_model, claim_put_model
-from app.models import Offer, Claim, Group
+from app.models import Offer, Claim, Group, Facilitator
 from utils.iota import make_transfer
 
 ns = Namespace('offers', description='Offers related operations')
@@ -42,11 +42,13 @@ class OfferCollection(Resource):
         if g.client.type != 'facilitator':
             abort(400, error='You must be facilitator')
 
+        f = Facilitator.objects.get_or_404(g.client.id)
+
         if Offer.objects(name=data['name']).count() > 0:
             abort(400, error='Name already exist')
 
         o = Offer(
-            facilitator=g.client.type,
+            facilitator=f,
             name=data['name'],
             tags=data.get('tags'),
             price=data['price'],
