@@ -38,7 +38,7 @@ student_nested = api.model('Student nested', {
     'img_uri': fields.String(required=True, description='Img uri')
 })
 
-user_nested = api.model('User nested', student_nested, {
+user_nested = api.inherit('User nested', student_nested, {
     'type': fields.String(required=True, description='Type')
 })
 
