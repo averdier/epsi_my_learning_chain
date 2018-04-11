@@ -199,6 +199,9 @@ class OfferClaimItem(Resource):
         if c.offer.facilitator.id != g.client.id:
             abort(400, error='Not authorized')
 
+        if c.status in ['canceled', 'validated']:
+            abort(400, error='Already closed')
+
         data = request.json
 
         if data['status'] not in ['running', 'canceled', 'validated']:

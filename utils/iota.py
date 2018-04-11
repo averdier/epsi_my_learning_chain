@@ -99,7 +99,7 @@ def make_transfer(iota_node, args):
     :return:
     """
     txn = [ProposedTransaction(
-        address=Address(Address(bytes(args['recipient_address']))),
+        address=Address(Address(bytes(args['recipient_address'].encode('utf-8')))),
         message=TryteString.from_string(args['message']),
         tag=Tag(args['tag']),
         value=args['value']
@@ -108,7 +108,7 @@ def make_transfer(iota_node, args):
     r = api.send_transfer(
         depth=7,
         transfers=txn,
-        change_address=Address(bytes(args['deposit_address'])),
+        change_address=Address(bytes(args['deposit_address'].encode('utf-8'))),
         min_weight_magnitude=13
     )
     print(r)
