@@ -217,6 +217,8 @@ class OfferClaimItem(Resource):
                 'seed': g.group.seed,
                 'deposit_address': c.group.deposit_address
             })
+            c.group.reserved -= o.price
+            c.group.save()
 
         c.status = data['status']
 
