@@ -31,7 +31,7 @@ group_model = api.inherit('Group model', group_minimal_model, {
 })
 
 group_full_model = api.inherit('Group full model', group_model, {
-    'claims': fields.Nested(claim_nested, required=True, description='Claims'),
+    'claims': fields.List(fields.Nested(claim_nested), required=True, description='Claims'),
     'balance': fields.Integer(required=True, description='Group balance'),
     'deposit_address': fields.Nested(iota_address_model, required=True, description='Group deposit address')
 })
