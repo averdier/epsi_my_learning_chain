@@ -37,8 +37,8 @@ class StudentCollection(Resource):
         """
         data = request.json
 
-        c = Campus.objects.get_or_404(data['campus'])
-        sc = Section.objects.get_or_404(data['section'])
+        c = Campus.objects.get_or_404(id=data['campus'])
+        sc = Section.objects.get_or_404(id=data['section'])
 
         if User.objects(username=data['username']).count() > 0:
             abort(400, error='Username already exist')
