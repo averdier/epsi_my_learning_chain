@@ -245,7 +245,7 @@ class Group(IOTAAccount):
         b = self.balance
         if b > 0:
             make_transfer(current_app.config['IOTA_HOST'], {
-                'recipient_address': self.campus.deposit_address.address,
+                'recipient_address': self.project.campus.deposit_address.address,
                 'message': 'From EPSI',
                 'tag': 'WITHDRAWGROUP',
                 'value': b,
