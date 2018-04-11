@@ -16,7 +16,9 @@ group_model = api.inherit('Group resource model', group_minimal_model, {
     'name': fields.String(required=True, description='Group name'),
     'project': fields.Nested(project_nested, required=True, description='Group project'),
     'campus': fields.Nested(campus_nested, attribute=lambda g: g.project.campus, description='Group campus'),
-    'students': fields.List(fields.Nested(student_nested), required=True, description='Students list')
+    'students': fields.List(fields.Nested(student_nested), required=True, description='Students list'),
+    'balance': fields.Integer(required=True, description='Balance'),
+    'reserved': fields.Integer(required=True, description='Reserved')
 })
 
 group_container = api.model('Group container', {
