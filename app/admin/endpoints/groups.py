@@ -59,7 +59,7 @@ class GroupCollection(Resource):
 class GroupItem(Resource):
     decorators = [auth.login_required]
 
-    @ns.marshal_with(group_model)
+    @ns.marshal_with(group_full_model)
     def get(self, id):
         """
         Return group
@@ -133,21 +133,6 @@ class GroupItemSupply(Resource):
         })
 
         return 'Group successfully supply', 204
-
-
-@ns.route('/<id>/details')
-@ns.response(404, 'Group not found')
-class GroupItemDetails(Resource):
-    decorators = [auth.login_required]
-
-    @ns.marshal_with(group_full_model)
-    def get(self, id):
-        """
-        Return Group
-        """
-        gr = Group.objects.get_or_404(id=id)
-
-        return gr
 
 
 @ns.route('/<id>/students/<sid>')
