@@ -53,6 +53,7 @@ class StudentCollection(Resource):
             first_name=data['first_name'],
             last_name=data['last_name'],
             username=data['username'],
+            email=data['email'],
             img_uri=data.get('img_uri'),
             scopes=data.get('scopes', [''])
         )
@@ -74,7 +75,7 @@ class StudentItem(Resource):
         """
         Return student
         """
-        s = Student.object.get_or_404(id=id)
+        s = Student.objects.get_or_404(id=id)
 
         return s
 
@@ -84,7 +85,7 @@ class StudentItem(Resource):
         """
         Patch student
         """
-        s = Student.object.get_or_404(id=id)
+        s = Student.objects.get_or_404(id=id)
         data = request.json
 
         if len(data) == 0:
@@ -121,7 +122,7 @@ class StudentItem(Resource):
         """
         Delete Student
         """
-        s = Student.object.get_or_404(id=id)
+        s = Student.objects.get_or_404(id=id)
 
         s.delete()
 
