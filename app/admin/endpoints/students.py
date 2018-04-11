@@ -67,7 +67,7 @@ class StudentCollection(Resource):
             send_mail_with_service({
                 'recipients': [s.email],
                 'subject': 'Bienvenue',
-                'message': "Bienvenue à l'EPSI {0}, vous êtes un étudiant".format(c.name)
+                'body': "Bienvenue à l'EPSI {0}, vous êtes un étudiant".format(c.name)
             })
         except Exception as ex:
             current_app.logger.error(ex)
@@ -136,4 +136,4 @@ class StudentItem(Resource):
 
         s.delete()
 
-        return 'Student successfully deleted'
+        return 'Student successfully deleted', 204

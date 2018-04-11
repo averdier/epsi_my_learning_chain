@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask import request
+from flask import request, current_app
 from flask_restplus import Namespace, Resource, abort
 from .. import auth
 from ..serializers.facilitators import facilitator_container, facilitator_full_model, facilitator_model, \
@@ -66,10 +66,10 @@ class FacilitatorCollection(Resource):
             send_mail_with_service({
                 'recipients': [f.email],
                 'subject': 'Bienvenue',
-                'message': "Bienvenue à l'EPSI, vous êtes un intervenant"
+                'body': "Bienvenue à l'EPSI, vous êtes un intervenant"
             })
-        except:
-            pass
+        except Exception as ex:
+            current_app.logger.error(ex)
 
         return f
 
