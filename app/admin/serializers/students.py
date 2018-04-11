@@ -7,7 +7,7 @@ from .. import api
 
 student_post_model = api.inherit('Student POST model', facilitator_post_model, {
     'campus': fields.String(required=True, description='Campus ID'),
-    'sections': fields.String(required=True, description='Section ID')
+    'section': fields.String(required=True, description='Section ID')
 })
 
 student_patch_model = api.inherit('Student PATCH model', facilitator_patch_model, {})
