@@ -117,7 +117,7 @@ class GroupItemSupply(Resource):
         gr = Group.objects.get_or_404(id=id)
         c = Campus.objects.get_or_404(id=data['campus'])
 
-        if gr.campus.id != c.id:
+        if gr.project.campus.id != c.id:
             abort(400, error='Not authorized')
 
         if c.balance < data['value']:
