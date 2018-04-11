@@ -20,6 +20,7 @@ offer_patch_model = api.model('Offer PATCH model', {
 
 offer_minimal_model = api.model('Offer minimal model', {
     'id': fields.String(required=True, description='Offer ID'),
+    'facilitator_id': fields.String(required=True, description='Facilitator ID', attribute=lambda o: o.facilitator.id),
     'name': fields.String(required=True, description='Name'),
     'tags': fields.List(fields.String(), required=True, description='Tags'),
     'price': fields.Integer(required=True, description='Price')

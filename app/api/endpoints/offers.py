@@ -117,8 +117,8 @@ class OfferItem(Resource):
         """
         o = Offer.objects.get_or_404(id=id)
 
-        #if o.facilitator.id != g.client.id:
-        #    abort(400, error='Not authorized')
+        if o.facilitator.id != g.client.id:
+            abort(400, error='Not authorized')
 
         o.delete()
 

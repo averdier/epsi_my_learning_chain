@@ -4,7 +4,7 @@ from flask import request
 from flask_restplus import Namespace, Resource, abort
 from .. import auth
 from ..serializers.groups import group_container, group_post_model, group_model, group_patch_model, group_full_model
-from app.models import Project, Group
+from app.models import Project, Group, Student
 from utils.iota import generate_seed
 
 ns = Namespace('groups', description='Groups related operation')
@@ -114,3 +114,49 @@ class GroupItemDetails(Resource):
         gr = Group.objects.get_or_404(id=id)
 
         return gr
+
+
+@ns.route('/<id>/students/<sid>')
+@ns.response(404, 'Group not found')
+class GroupItemStudent(Resource):
+    decorators = [auth.login_required]
+
+    @ns.response(204, 'Student successfully added')
+    def post(self, id, sid):
+        """
+        Add student
+        """
+        gr = Group.objects.get_or_404(id=id)
+        s = Student.objects.get_or_404(id=sid)
+
+        if gr.project.campus.id != s.campus.id:
+            abort(400, error='Not authorized')
+
+        if s in gr.students:
+            abort(400, error='Student already exist')
+
+        gr.students.append(s)
+        gr.save()
+
+        return 'Student successfully added', 204
+
+    @ns.response(204, 'Student successfully removed')
+    def delete(self, id, sid):
+        """
+        Remove student
+        """
+        gr = Group.objects.get_or_404(id=id)
+        s = Student.objects.get_or_404(id=sid)
+
+        if gr.project.campus.id != s.campus.id:
+            abort(400, error='Not authorized')
+
+        if s not in gr.students:
+            abort(400, error='Student not exist in group')
+
+        gr.students.remove(s)
+
+        gr.save()
+
+        return 'Student successfully removed', 204
+

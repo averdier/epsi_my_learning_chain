@@ -10,7 +10,6 @@ group_post_model = api.model('Group POST model', {
     'name': fields.String(required=True, min_length=4, description='Name')
 })
 
-
 group_patch_model = api.model('Group patch model', {
     'name': fields.String(required=False, min_length=4, description='Name')
 })
