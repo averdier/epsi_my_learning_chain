@@ -16,5 +16,5 @@ message_minimal_model = api.model('Message minimal model', {
 })
 
 message_container = api.model('Message container', {
-    'messages': fields.List(fields.String(), required=True, description='Messages list')
+    'messages': fields.List(fields.Nested(message_minimal_model), required=True, description='Messages list')
 })
