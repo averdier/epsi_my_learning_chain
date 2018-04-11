@@ -220,9 +220,22 @@ class OfferClaimItem(Resource):
         if data['status'] not in ['running', 'canceled', 'validated']:
             abort(400, error='Unknown type')
 
+        recipients = [o.facilitator.email]
+        for s in c.group.students:
+            recipients.append(s.email)
+
+        payload = {
+            'server': current_app.config['EMAIL_HOST'],
+            'recipients': recipients,
+            'subject': '{0} | '.format(o.name),
+            'body': "Bonjour \n\n"
+        }
+
         if data['status'] == 'canceled':
             c.group.reserved -= o.price
             c.group.save()
+            payload['subject'] += 'Annulation'
+            payload['body'] += "Annulation de la demande d'intervention"
 
         if data['status'] == 'validated':
             make_transfer(current_app.config['IOTA_HOST'], {
@@ -235,10 +248,17 @@ class OfferClaimItem(Resource):
             })
             c.group.reserved -= o.price
             c.group.save()
+            payload['subject'] += 'Cloture'
+            payload['body'] += "Cloture de l'intervention, merci d'avoir utilisé notre service"
 
         c.status = data['status']
 
         c.save()
+
+        try:
+            send_mail_with_service(payload)
+        except Exception as ex:
+            current_app.logger.error(ex)
 
         return 'Claim successfully update', 204
 
