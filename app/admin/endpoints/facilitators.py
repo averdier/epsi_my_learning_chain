@@ -7,6 +7,7 @@ from ..serializers.facilitators import facilitator_container, facilitator_full_m
     facilitator_patch_model, facilitator_post_model
 from app.models import Facilitator
 from utils.iota import generate_seed
+from utils.email import send_mail_with_service
 
 ns = Namespace('facilitators', description='Facilitators related operation')
 
@@ -60,6 +61,15 @@ class FacilitatorCollection(Resource):
         f.get_transfers()
 
         f.save()
+
+        try:
+            send_mail_with_service({
+                'recipients': [f.email],
+                'subject': 'Bienvenue',
+                'message': "Bienvenue à l'EPSI, vous êtes un intervenant"
+            })
+        except:
+            pass
 
         return f
 

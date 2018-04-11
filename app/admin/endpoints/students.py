@@ -5,6 +5,7 @@ from flask_restplus import Namespace, Resource, abort
 from .. import auth
 from ..serializers.students import student_container, student_model, student_post_model, student_patch_model
 from app.models import User, Student, Campus, Section
+from utils.email import send_mail_with_service
 
 
 ns = Namespace('students', description='Students related operation')
@@ -61,6 +62,15 @@ class StudentCollection(Resource):
         s.secret = data['secret']
 
         s.save()
+
+        try:
+            send_mail_with_service({
+                'recipients': [s.email],
+                'subject': 'Bienvenue',
+                'message': "Bienvenue à l'EPSI {0}, vous êtes un étudiant".format(c.name)
+            })
+        except:
+            pass
 
         return s
 

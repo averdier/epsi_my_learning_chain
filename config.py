@@ -15,6 +15,7 @@ class Config:
     MONGODB_CONNECT = False
 
     IOTA_HOST = ""
+    EMAIL_HOST = ""
 
     RESTPLUS_SWAGGER_UI_DOC_EXPANSION = 'list'
     RESTPLUS_VALIDATE = True
