@@ -30,6 +30,7 @@ class StudentCollection(Resource):
         return {'students': [s for s in Student.objects]}
 
     @ns.marshal_with(student_model)
+    @ns.expect(student_post_model)
     def post(self):
         """
         Add student
@@ -75,6 +76,7 @@ class StudentItem(Resource):
         return s
 
     @ns.response(204, 'Student successfully patched')
+    @ns.expect(student_patch_model)
     def patch(self, id):
         """
         Patch student

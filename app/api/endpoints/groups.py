@@ -27,7 +27,7 @@ class GroupCollection(Resource):
         """
         Return Groups
         """
-        if g.client.campus is None:
+        if 'campus' not in dir(g.client):
             abort(400, error='You must have campus')
 
         prjs = Project.objects(campus=g.client.campus)
@@ -44,7 +44,7 @@ class GroupItem(Resource):
         """
         Return Group
         """
-        if g.client.campus is None:
+        if 'campus' not in dir(g.client):
             abort(400, error='You must have campus')
 
         gr = Group.objects.get_or_404(id=id)

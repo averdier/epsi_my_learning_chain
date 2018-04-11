@@ -27,7 +27,7 @@ class ProjectCollection(Resource):
         """
         Return Projects
         """
-        if g.client.campus is None:
+        if 'campus' not in dir(g.client):
             abort(400, error='You must have campus')
 
         return {'projects': [p for p in Project.objects(campus=g.client.campus)]}
@@ -43,7 +43,7 @@ class ProjectItem(Resource):
         """
         Return Project
         """
-        if g.client.campus is None:
+        if 'campus' not in dir(g.client):
             abort(400, error='You must have campus')
 
         p = Project.objects.get_or_404(id=id)

@@ -27,7 +27,7 @@ class SectionCollection(Resource):
         """
         Return Sections
         """
-        if g.client.campus is None:
+        if 'campus' not in dir(g.client):
             abort(400, error='You must have campus')
 
         return {'sections': [s for s in Section.objects(campus=g.client.campus)]}
@@ -43,7 +43,7 @@ class SectionItem(Resource):
         """
         Return section
         """
-        if g.client.campus is None:
+        if 'campus' not in dir(g.client):
             abort(400, error='You must have campus')
 
         s = Section.objects.get_or_404(id=id)
