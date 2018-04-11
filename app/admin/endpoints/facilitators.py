@@ -90,26 +90,26 @@ class FacilitatorItem(Resource):
         if len(data) == 0:
             abort(400, error='No data')
 
-        if data['first_name']:
+        if data.get('first_name'):
             f.first_name = data['first_name']
 
-        if data['last_name']:
+        if data.get('last_name'):
             f.last_name = data['last_name']
 
-        if data['email']:
+        if data.get('email'):
             fs = Facilitator.objects(email=data['email']).first()
             if fs is not None and fs.id != id:
                 abort(400, error='Email already exist')
 
             f.email = data['email']
 
-        if data['img_uri']:
+        if data.get('img_uri'):
             f.img_uri = data['img_uri']
 
-        if data['secret']:
+        if data.get('secret'):
             f.secret = data['secret']
 
-        if data['scopes']:
+        if data.get('scopes'):
             f.scopes = data['scopes']
 
         f.save()

@@ -10,6 +10,11 @@ group_post_model = api.model('Group POST model', {
     'name': fields.String(required=True, min_length=4, description='Name')
 })
 
+group_supply_model = api.model('Group supply model', {
+    'campus': fields.String(required=True, description='Campus ID'),
+    'value': fields.Integer(required=True, description='Value')
+})
+
 group_patch_model = api.model('Group patch model', {
     'name': fields.String(required=False, min_length=4, description='Name')
 })

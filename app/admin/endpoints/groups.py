@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from flask import request
+from flask import request, current_app
 from flask_restplus import Namespace, Resource, abort
 from .. import auth
-from ..serializers.groups import group_container, group_post_model, group_model, group_patch_model, group_full_model
-from app.models import Project, Group, Student
-from utils.iota import generate_seed
+from ..serializers.groups import group_container, group_post_model, group_model, group_patch_model, group_full_model, \
+    group_supply_model
+from app.models import Project, Group, Student, Campus
+from utils.iota import generate_seed, make_transfer
 
 ns = Namespace('groups', description='Groups related operation')
 
@@ -48,7 +49,7 @@ class GroupCollection(Resource):
             seed=generate_seed()
         )
 
-        gr.get_transfers()
+        d = gr.deposit_address
         gr.save()
 
         return gr
@@ -99,6 +100,39 @@ class GroupItem(Resource):
         gr.delete()
 
         return 'Group successfully deleted', 204
+
+
+@ns.route('/<id>/supply')
+@ns.response(404, 'Group not found')
+class GroupItemSupply(Resource):
+    decorators = [auth.login_required]
+
+    @ns.response(204, 'Group successfully supply')
+    @ns.expect(group_supply_model)
+    def post(self, id):
+        """
+        Supply account
+        """
+        data = request.json
+        gr = Group.objects.get_or_404(id=id)
+        c = Campus.objects.get_or_404(id=data['id'])
+
+        if gr.campus.id != c.id:
+            abort(400, error='Not authorized')
+
+        if c.balance < data['value']:
+            abort(400, error='Insufficient funds')
+
+        make_transfer(current_app.config['IOTA_HOST'], {
+            'recipient_address': gr.deposit_address.address,
+            'message': 'From EPSI',
+            'tag': 'SUPPLYGROUP',
+            'value': data['value'],
+            'seed': c.seed,
+            'deposit_address': c.deposit_address.address
+        })
+
+        return 'Group successfully supply', 204
 
 
 @ns.route('/<id>/details')
@@ -159,4 +193,3 @@ class GroupItemStudent(Resource):
         gr.save()
 
         return 'Student successfully removed', 204
-

@@ -47,7 +47,7 @@ class CampusCollection(Resource):
             seed=generate_seed(),
             description=data.get('description', '')
         )
-        c.get_transfers()
+        d = c.deposit_address
         c.save()
 
         return c

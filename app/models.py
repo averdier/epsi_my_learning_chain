@@ -5,7 +5,7 @@ from iota import Iota, Transaction
 from werkzeug.security import generate_password_hash, check_password_hash
 from iota.crypto.addresses import AddressGenerator
 from .extensions import db
-from utils.iota import address_balance, address_checksum
+from utils.iota import address_balance, address_checksum, make_transfer
 from utils.hash import get_checksum, verify_checksum
 from datetime import datetime
 
@@ -240,6 +240,20 @@ class Group(IOTAAccount):
     name = db.StringField(required=True)
     students = db.ListField(db.ReferenceField(Student))
     reserved = db.IntField(required=True, default=0)
+
+    def delete(self):
+        b = self.balance
+        if b > 0:
+            make_transfer(current_app.config['IOTA_HOST'], {
+                'recipient_address': self.campus.deposit_address.address,
+                'message': 'From EPSI',
+                'tag': 'WITHDRAWGROUP',
+                'value': b,
+                'seed': self.seed,
+                'deposit_address': self.deposit_address.address
+            })
+
+        super().delete()
 
 
 class Offer(db.Document):
