@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask import request
+from flask import request, current_app
 from flask_restplus import Namespace, Resource, abort
 from .. import auth
 from ..serializers.students import student_container, student_model, student_post_model, student_patch_model
@@ -69,8 +69,8 @@ class StudentCollection(Resource):
                 'subject': 'Bienvenue',
                 'message': "Bienvenue à l'EPSI {0}, vous êtes un étudiant".format(c.name)
             })
-        except:
-            pass
+        except Exception as ex:
+            current_app.logger.error(ex)
 
         return s
 
