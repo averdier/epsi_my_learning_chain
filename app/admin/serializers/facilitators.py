@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from flask_restplus import fields
+from .nested import claim_nested
 from .iota import iota_address_model, api
 
 
@@ -30,13 +31,11 @@ facilitator_minimal_model = api.model('Facilitator minimal model', {
     'img_uri': fields.String(required=True, description='Img uri')
 })
 
-facilitator_model = api.inherit('Facilitator model', facilitator_minimal_model, {
+facilitator_full_model = api.inherit('Facilitator model', facilitator_minimal_model, {
     'username': fields.String(required=True, description='Username'),
     'email': fields.String(required=True, description='Email'),
-    'scopes': fields.List(fields.String(), required=True, description='Scopes')
-})
-
-facilitator_full_model = api.inherit('Facilitator full model', facilitator_model, {
+    'scopes': fields.List(fields.String(), required=True, description='Scopes'),
+    'claims': fields.List(fields.Nested(claim_nested), required=True, description='Claims list'),
     'balance': fields.Integer(required=True, description='Facilitator balance'),
     'deposit_address': fields.Nested(iota_address_model, required=True, description='Facilitator deposit address')
 })

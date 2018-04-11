@@ -80,7 +80,7 @@ class FacilitatorCollection(Resource):
 class FacilitatorItem(Resource):
     decorators = [auth.login_required]
 
-    @ns.marshal_with(facilitator_model)
+    @ns.marshal_with(facilitator_full_model)
     def get(self, id):
         """
         Return Facilitator
@@ -137,18 +137,3 @@ class FacilitatorItem(Resource):
         f.delete()
 
         return 'Facilitator successfully deleted', 204
-
-
-@ns.route('/<id>/details')
-@ns.response(404, 'Facilitator not found')
-class FacilitatorItemDetails(Resource):
-    decorators = [auth.login_required]
-
-    @ns.marshal_with(facilitator_full_model)
-    def get(self, id):
-        """
-        Return facilitator
-        """
-        f = Facilitator.objects.get_or_404(id=id)
-
-        return f

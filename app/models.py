@@ -231,6 +231,15 @@ class Facilitator(User, IOTAAccount):
     Facilitator model
     """
 
+    @property
+    def claims(self):
+        """
+        Return claims
+        """
+        os = Offer.objects(facilitator=self)
+
+        return Claim.objects(offer__in=os)
+
 
 class Student(User):
     """
