@@ -185,7 +185,7 @@ class OfferClaimItem(Resource):
         return c
 
     @ns.response(204, 'Claim successfully updated')
-    @ns.expect(claim_model)
+    @ns.expect(claim_put_model)
     def put(self, id, cid):
         """
         Update claim
