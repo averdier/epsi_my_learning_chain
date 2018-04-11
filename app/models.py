@@ -277,6 +277,7 @@ class Claim(db.Document):
     offer = db.ReferenceField(Offer, required=True)
     group = db.ReferenceField(Group)
     status = db.StringField(required=True)
+    message = db.StringField(default='')
 
 
 class Message(db.Document):

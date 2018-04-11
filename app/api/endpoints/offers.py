@@ -8,6 +8,7 @@ from ..serializers.claims import claim_container, claim_model, claim_post_model,
 from ..serializers.messages import message_container, message_post_model, message_minimal_model
 from app.models import Offer, Claim, Group, Facilitator, Message
 from utils.iota import make_transfer
+from utils.email import send_mail_with_service
 
 ns = Namespace('offers', description='Offers related operations')
 
@@ -157,12 +158,23 @@ class OfferClaimCollection(Resource):
         c = Claim(
             offer=o,
             group=gr,
-            status='pending'
+            status='pending',
+            message=data.get('message', '')
         )
         c.save()
 
         gr.reserved += o.price
         gr.save()
+
+        try:
+            send_mail_with_service({
+                'server': current_app.config['EMAIL_HOST'],
+                'recipients': [o.facilitator.email],
+                'subject': '{0} | Demande'.format(o.name),
+                'body': "Bonjour \n\nLe groupe {0} souhaiterait votre intervention \nMessage:\n{1}".format(gr.name, c.message)
+            })
+        except Exception as ex:
+            current_app.logger.error(ex)
 
         return c
 
