@@ -64,6 +64,7 @@ class FacilitatorCollection(Resource):
 
         try:
             send_mail_with_service({
+                'server': current_app.config['EMAIL_HOST'],
                 'recipients': [f.email],
                 'subject': 'Bienvenue',
                 'body': "Bienvenue à l'EPSI, vous êtes un intervenant"

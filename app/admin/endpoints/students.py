@@ -65,6 +65,7 @@ class StudentCollection(Resource):
 
         try:
             send_mail_with_service({
+                'server': current_app.config['EMAIL_HOST'],
                 'recipients': [s.email],
                 'subject': 'Bienvenue',
                 'body': "Bienvenue à l'EPSI {0}, vous êtes un étudiant".format(c.name)
