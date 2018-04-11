@@ -167,6 +167,7 @@ class Campus(IOTAAccount):
     Campus model
     """
     name = db.StringField(required=True, unique=True)
+    description = db.StringField(default='')
 
 
 class Section(db.Document):
