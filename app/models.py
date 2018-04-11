@@ -239,6 +239,7 @@ class Group(IOTAAccount):
     project = db.ReferenceField(Project, required=True)
     name = db.StringField(required=True)
     students = db.ListField(db.ReferenceField(Student))
+    reserved = db.IntField(required=True, default=0)
 
 
 class Offer(db.Document):

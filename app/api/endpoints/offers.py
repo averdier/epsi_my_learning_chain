@@ -4,7 +4,7 @@ from flask import request, g
 from flask_restplus import Namespace, Resource, abort
 from .. import auth
 from ..serializers.offers import offer_container, offer_post_model, offer_patch_model, offer_model
-from ..serializers.claims import claim_container, claim_model, claim_post_model
+from ..serializers.claims import claim_container, claim_model, claim_post_model, claim_put_model
 from app.models import Offer, Claim, Group
 
 ns = Namespace('offers', description='Offers related operations')
@@ -147,7 +147,7 @@ class OfferClaimCollection(Resource):
 
         gr = Group.objects.get_or_404(id=data['group'])
 
-        if gr.balance < o.price:
+        if gr.balance - gr.reserved < o.price:
             abort(400, error='No founds')
 
         c = Claim(
@@ -156,6 +156,9 @@ class OfferClaimCollection(Resource):
             status='pending'
         )
         c.save()
+
+        gr.reserved += o.price
+        gr.save()
 
         return c
 
@@ -178,6 +181,33 @@ class OfferClaimItem(Resource):
 
         return c
 
+    @ns.response(204, 'Claim successfully updated')
+    @ns.expect(claim_model)
+    def put(self, id, cid):
+        """
+        Update claim
+        """
+        o = Offer.objects.get_or_404(id=id)
+        c = Claim.objects.get_or_404(id=cid)
+
+        if c.offer.id != o.id:
+            abort(400, error='Impossible')
+
+        data = request.json
+
+        if data['status'] not in ['running', 'canceled', 'validated']:
+            abort(400, error='Unknown type')
+
+        if data['status'] == 'canceled':
+            c.group.reserved -= o.price
+            c.group.save()
+
+        c.status = data['status']
+
+        c.save()
+
+        return 'Claim successfully update', 204
+
     @ns.response(204, 'Claim successfully deleted')
     def delete(self, id, cid):
         """
@@ -188,6 +218,10 @@ class OfferClaimItem(Resource):
 
         if c.offer.id != o.id:
             abort(400, error='Impossible')
+
+        if c.status != 'validated':
+            c.group.reserved -= o.price
+            c.group.save()
 
         c.delete()
 

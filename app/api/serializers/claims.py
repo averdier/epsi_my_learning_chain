@@ -7,6 +7,10 @@ claim_post_model = api.model('Claim POST model', {
     'group': fields.String(required=True, description='Group ID'),
 })
 
+claim_put_model = api.model('Claim PUT model', {
+    'status': fields.String(required=True, description='Status')
+})
+
 
 claim_minimal_resource = api.model('Claim minimal model', {
     'id': fields.String(required=True, description='Claim ID'),
