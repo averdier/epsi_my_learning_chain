@@ -46,16 +46,16 @@ class StudentCollection(Resource):
         if User.objects(email=data['email']).count() > 0:
             abort(400, error='Email already exist')
 
-        s = Student()
-        s.campus = c
-        s.section = sc
-        s.type = 'student'
-        s.first_name = data['first_name']
-        s.last_name = data['last_name']
-        s.email = data['email']
-        s.username = data['username']
-        s.img_uri = data.get('img_uri')
-        s.scopes = data['scopes']
+        s = Student(
+            campus=c,
+            section=sc,
+            type='student',
+            first_name=data['first_name'],
+            last_name=data['last_name'],
+            username=data['username'],
+            img_uri=data.get('img_uri'),
+            scopes=data.get('scopes')
+        )
 
         s.secret = data['secret']
 
