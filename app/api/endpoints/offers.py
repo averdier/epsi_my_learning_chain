@@ -4,7 +4,8 @@ from flask import request, g
 from flask_restplus import Namespace, Resource, abort
 from .. import auth
 from ..serializers.offers import offer_container, offer_post_model, offer_patch_model, offer_model
-from app.models import Offer
+from ..serializers.claims import claim_container, claim_model, claim_post_model
+from app.models import Offer, Claim, Group
 
 ns = Namespace('offers', description='Offers related operations')
 
@@ -123,7 +124,68 @@ class OfferItem(Resource):
 
 @ns.route('/<id>/claims')
 @ns.response(404, 'Offer not found')
-class OfferClaim(Resource):
+class OfferClaimCollection(Resource):
     decorators = [auth.login_required]
 
+    @ns.marshal_with(claim_container)
+    def get(self, id):
+        """
+        Return Claims of Offer
+        """
+        o = Offer.objects.get_or_404(id=id)
 
+        return {'claims': [c for c in Claim.objects(offer=o)]}
+
+    @ns.marshal_with(claim_model)
+    @ns.expect(claim_post_model)
+    def post(self, id):
+        """
+        Add Claim
+        """
+        data = request.json
+        o = Offer.objects.get_or_404(id=id)
+
+        gr = Group.objects.get_or_404(id=data['group'])
+
+        c = Claim(
+            offer=o,
+            group=gr,
+            status='pending'
+        )
+        c.save()
+
+        return c
+
+
+@ns.route('/<id>/claims/<cid>')
+@ns.response(404, 'Claim not found')
+class OfferClaimItem(Resource):
+    decorators = [auth.login_required]
+
+    @ns.marshal_with(claim_model)
+    def get(self, id, cid):
+        """
+        Return Claim
+        """
+        o = Offer.objects.get_or_404(id=id)
+        c = Claim.objects.get_or_404(id=cid)
+
+        if c.offer.id != o.id:
+            abort(400, error='Impossible')
+
+        return c
+
+    @ns.response(204, 'Claim successfully deleted')
+    def delete(self, id, cid):
+        """
+        Delete Claim
+        """
+        o = Offer.objects.get_or_404(id=id)
+        c = Claim.objects.get_or_404(id=cid)
+
+        if c.offer.id != o.id:
+            abort(400, error='Impossible')
+
+        c.delete()
+
+        return 'Claim successfully deleted', 204

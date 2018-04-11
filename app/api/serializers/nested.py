@@ -14,6 +14,22 @@ project_nested = api.model('Project nested', {
     'name': fields.String(required=True, description='Project name')
 })
 
+group_nested = api.model('Group nested', {
+    'id': fields.String(required=True, description='Group ID'),
+    'name': fields.String(required=True, description='Group name'),
+    'project_id': fields.String(required=True, description='Group project', attribute=lambda g: g.project.id),
+    'students_count': fields.Integer(required=True, description='User count', attribute=lambda g: len(g.students))
+})
+
+
+offer_nested = api.model('Offer nested', {
+    'id': fields.String(required=True, description='Offer ID'),
+    'facilitator_id': fields.String(required=True, description='Facilitator ID', attribute=lambda o: o.facilitator.id),
+    'name': fields.String(required=True, description='Name'),
+    'tags': fields.List(fields.String(), required=True, description='Tags'),
+    'price': fields.Integer(required=True, description='Price')
+})
+
 
 student_nested = api.model('Student nested', {
     'id': fields.String(required=True, description='Student ID'),
