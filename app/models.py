@@ -258,3 +258,13 @@ class Offer(db.Document):
     tags = db.ListField(db.StringField())
     price = db.IntField(required=True, default=0)
     description = db.StringField()
+
+
+class Claim(db.Document):
+    """
+    Claim model
+    """
+    created_at = db.DateTimeField(default=datetime.now())
+    offer = db.ReferenceField(Offer, required=True)
+    group = db.ReferenceField(Group)
+    status = db.StringField(required=True)

@@ -58,6 +58,8 @@ class StudentCollection(Resource):
 
         s.secret = data['secret']
 
+        s.save()
+
         return s
 
 

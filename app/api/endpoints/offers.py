@@ -119,3 +119,11 @@ class OfferItem(Resource):
         o.delete()
 
         return 'Offer successfully deleted', 204
+
+
+@ns.route('/<id>/claims')
+@ns.response(404, 'Offer not found')
+class OfferClaim(Resource):
+    decorators = [auth.login_required]
+
+
