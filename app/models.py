@@ -249,6 +249,14 @@ class Group(IOTAAccount):
     students = db.ListField(db.ReferenceField(Student))
     reserved = db.IntField(required=True, default=0)
 
+    @property
+    def claims(self):
+        """
+        Return Claims
+        :return:
+        """
+        return Claim.objects(group=self)
+
     def delete(self):
         b = self.balance
         if b > 0:

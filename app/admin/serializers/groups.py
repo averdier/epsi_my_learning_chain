@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from flask_restplus import fields
-from .nested import student_nested
+from .nested import student_nested, claim_nested
 from .iota import iota_address_model, api
 
 
@@ -31,6 +31,7 @@ group_model = api.inherit('Group model', group_minimal_model, {
 })
 
 group_full_model = api.inherit('Group full model', group_model, {
+    'claims': fields.Nested(claim_nested, required=True, description='Claims'),
     'balance': fields.Integer(required=True, description='Group balance'),
     'deposit_address': fields.Nested(iota_address_model, required=True, description='Group deposit address')
 })

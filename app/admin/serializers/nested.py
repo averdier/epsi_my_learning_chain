@@ -21,3 +21,9 @@ group_nested = api.model('Group nested', {
     'name': fields.String(required=True, description='Name'),
     'students_count': fields.Integer(required=True, description='User count', attribute=lambda p: len(p.students))
 })
+
+claim_nested = api.model('Claim nested', {
+    'id': fields.String(required=True, description='Claim ID'),
+    'offer_id': fields.String(required=True, description='Offer ID', attribute=lambda c: c.offer.id),
+    'status': fields.String(required=True, description='Status')
+})
