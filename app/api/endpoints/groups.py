@@ -4,6 +4,7 @@ from flask import request, g
 from flask_restplus import Namespace, Resource, abort
 from .. import auth
 from ..serializers.groups import group_container, group_model
+from ..parsers import upload_parser
 from app.models import Group, Project
 
 ns = Namespace('groups', description='Groups related operations')
@@ -53,3 +54,21 @@ class GroupItem(Resource):
             abort(400, error='Not authorized')
 
         return gr
+
+
+@ns.route('/<id>/upload')
+class GroupItemUploader(Resource):
+    decorators = [auth.login_required]
+
+    @ns.marshal_with(group_model)
+    @ns.expect(upload_parser)
+    def post(self, id):
+        """
+        Add file
+        """
+        gr = Group.objects.get_or_404(id=id)
+
+        if 'campus' not in dir(g.client):
+            abort(400, error='You must have campus')
+
+

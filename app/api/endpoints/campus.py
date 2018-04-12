@@ -3,10 +3,8 @@
 from flask import request, g, current_app
 from flask_restplus import Namespace, Resource, abort
 from .. import auth
-from ..serializers.campus import campus_resource, campus_container
+from ..serializers.campus import campus_model, campus_container
 from app.models import Campus
-from utils.iota import generate_seed, address_balance
-
 
 ns = Namespace('campus', description='Campus related operation')
 
@@ -37,7 +35,7 @@ class CampusCollection(Resource):
 class CampusItem(Resource):
     decorators = [auth.login_required]
 
-    @ns.marshal_with(campus_resource)
+    @ns.marshal_with(campus_model)
     def get(self, id):
         """
         Return Campus

@@ -43,3 +43,10 @@ user_nested = api.inherit('User nested', student_nested, {
 })
 
 facilitator_nested = api.inherit('Facilitator model', student_nested, {})
+
+
+file_nested = api.model('File nested', {
+    'id': fields.String(required=True, description='File ID'),
+    'name': fields.String(required=True, description='Filename'),
+    'extension': fields.String(required=True, description='Extension')
+})

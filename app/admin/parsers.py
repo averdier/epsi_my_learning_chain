@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from werkzeug.datastructures import FileStorage
-from ..api import api
+from . import api
 
 
 upload_parser = api.parser()

@@ -378,6 +378,13 @@ class Student(User):
     campus = db.ReferenceField(Campus, required=True)
     section = db.ReferenceField(Section, required=True)
 
+    @property
+    def groups(self):
+        """
+        Return groups
+        """
+        return Group.objects(students__contains=self)
+
 
 class Group(IOTAAccount):
     """
@@ -387,6 +394,47 @@ class Group(IOTAAccount):
     name = db.StringField(required=True)
     students = db.ListField(db.ReferenceField(Student))
     reserved = db.IntField(required=True, default=0)
+    files = db.ListField(db.ReferenceField(File))
+
+    def add_file(self, data):
+        """
+        Add file to Group
+        """
+        base_path = os.path.join(current_app.config['UPLOAD_BASE'], str(self.id))
+        pathlib.Path(base_path).mkdir(parents=False, exist_ok=True)
+
+        if allowed_file(current_app.config['ALLOWED_EXTENSIONS'], data.filename):
+            base_name = secure_filename(data.filename)
+            name = get_name_without_extension(base_name)
+            extension = get_extension(base_name)
+            path = os.path.join(base_path, base_name)
+
+            data.save(path)
+
+            f = File(
+                name=name,
+                extension=extension,
+                path=path
+            )
+            f.save()
+            self.files.append(f)
+
+        else:
+            raise Exception('Extension not allowed')
+
+    def remove_file(self, file):
+        """
+        Remove file
+        """
+        if file in self.files:
+            try:
+                if os.path.exists(file.path):
+                    os.remove(file.path)
+            except:
+                pass
+
+            self.files.remove(file)
+            file.delete()
 
     @property
     def claims(self):
@@ -407,6 +455,13 @@ class Group(IOTAAccount):
                 'seed': self.seed,
                 'deposit_address': self.deposit_address.address
             })
+
+        base_path = os.path.join(current_app.config['UPLOAD_BASE'], str(self.id))
+        if os.path.exists(base_path):
+            try:
+                shutil.rmtree(base_path, ignore_errors=True)
+            except:
+                pass
 
         super().delete()
 
