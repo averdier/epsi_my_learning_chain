@@ -18,8 +18,8 @@ project_minimal_model = api.model('Project minimal model', {
     'name': fields.String(required=True, description='Name')
 })
 
-project_model = api.inherit('Project model', {
-    'groups': fields.Nested(group_nested, required=True, description='Groups list')
+project_model = api.inherit('Project model', project_minimal_model, {
+    'groups': fields.List(fields.Nested(group_nested), required=True, description='Groups list')
 })
 
 project_container = api.model('Project container', {

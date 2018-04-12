@@ -5,7 +5,8 @@ from flask_restplus import Namespace, Resource, abort
 from .. import auth
 from ..serializers.campus import campus_post_model, campus_container, campus_model, campus_full_model, \
     campus_patch_model
-from app.models import Campus
+from ..parsers import upload_parser
+from app.models import Campus, File
 from utils.iota import generate_seed
 
 ns = Namespace('campus', description='Campus related operation')
@@ -58,7 +59,7 @@ class CampusCollection(Resource):
 class CampusItem(Resource):
     decorators = [auth.login_required]
 
-    @ns.marshal_with(campus_model)
+    @ns.marshal_with(campus_full_model)
     def get(self, id):
         """
         Return Campus
@@ -105,16 +106,51 @@ class CampusItem(Resource):
         return 'Campus successfully deleted', 204
 
 
-@ns.route('/<id>/details')
+@ns.route('/<id>/upload')
 @ns.response(404, 'Campus not found')
-class CampusItemDetails(Resource):
+class CampusItemUploader(Resource):
     decorators = [auth.login_required]
 
     @ns.marshal_with(campus_full_model)
-    def get(self, id):
+    @ns.expect(upload_parser)
+    def post(self, id):
         """
-        Return Campus
+        Upload file
         """
         c = Campus.objects.get_or_404(id=id)
 
-        return c
+        args = upload_parser.parse_args()
+        data = args['file']
+
+        try:
+            c.add_file(data)
+            c.save()
+
+            return c
+
+        except Exception as ex:
+            abort(400, error='{0}'.format(ex))
+
+
+@ns.route('/<id>/upload/<uid>')
+@ns.response(404, 'Campus not found')
+class CampusItemUpload(Resource):
+    decorators = [auth.login_required]
+
+    @ns.response(204, 'File successfully deleted')
+    def delete(self, id, uid):
+        """
+        Delete file
+        """
+        c = Campus.objects.get_or_404(id=id)
+        f = File.objects.get_or_404(id=uid)
+
+        try:
+            c.remove_file(f)
+
+            c.save()
+
+            return 'File successfully deleted', 204
+
+        except Exception as ex:
+            abort(400, error='{0}'.format(ex))

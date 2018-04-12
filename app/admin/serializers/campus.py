@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from flask_restplus import fields
+from .nested import file_nested
 from .iota import iota_address_model, api
 
 
@@ -25,7 +26,8 @@ campus_model = api.inherit('Campus model', campus_minimal_model, {
 
 campus_full_model = api.inherit('Campus full model', campus_model, {
     'balance': fields.Integer(required=True, description='Campus balance'),
-    'deposit_address': fields.Nested(iota_address_model, required=True, description='Campus deposit address')
+    'deposit_address': fields.Nested(iota_address_model, required=True, description='Campus deposit address'),
+    'files': fields.List(fields.Nested(file_nested), required=True, description='File list')
 })
 
 campus_container = api.model('Campus container model', {

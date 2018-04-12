@@ -16,6 +16,7 @@ class Config:
 
     IOTA_HOST = ""
     EMAIL_HOST = ""
+    UPLOAD_BASE = ""
 
     RESTPLUS_SWAGGER_UI_DOC_EXPANSION = 'list'
     RESTPLUS_VALIDATE = True
