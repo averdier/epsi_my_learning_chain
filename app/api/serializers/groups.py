@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from flask_restplus import fields
-from .nested import project_nested, campus_nested, student_nested, api
+from .nested import project_nested, campus_nested, student_nested, file_nested, api
 
 
 group_minimal_model = api.model('Group minimal model', {
@@ -18,7 +18,8 @@ group_model = api.inherit('Group resource model', group_minimal_model, {
     'campus': fields.Nested(campus_nested, attribute=lambda g: g.project.campus, description='Group campus'),
     'students': fields.List(fields.Nested(student_nested), required=True, description='Students list'),
     'balance': fields.Integer(required=True, description='Balance'),
-    'reserved': fields.Integer(required=True, description='Reserved')
+    'reserved': fields.Integer(required=True, description='Reserved'),
+    'files': fields.List(fields.Nested(file_nested), required=True, description='Files list')
 })
 
 group_container = api.model('Group container', {

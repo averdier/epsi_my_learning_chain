@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from flask import request, send_file
+from flask import request, send_file, g
 from flask_restplus import Namespace, Resource, abort
 from .. import auth
-from app.models import File, Campus, Project
+from app.models import File, Campus, Project, Group
 
 
 ns = Namespace('files', description='Files related operation')
@@ -29,4 +29,21 @@ class FileItem(Resource):
         """
         f = File.objects.get_or_404(id=id)
 
-        return send_file(f.path)
+        grs = Group.objects(files__contains=f)
+        if len(grs) > 0:
+            if 'groups' not in dir(g.client):
+                abort(400, error='You must have group')
+
+            found = False
+            for gr in g.client.groups:
+                if gr in grs:
+                    if f in gr.files:
+                        found = True
+
+            if found:
+                return send_file(f.path)
+            else:
+                abort(400, error='Not authorized')
+
+        else:
+            return send_file(f.path)

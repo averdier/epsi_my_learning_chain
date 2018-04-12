@@ -12,7 +12,9 @@ user_resource = api.model('User resource', {
     'id': fields.String(required=True, description='User ID'),
     'type': fields.String(required=True, description='Type'),
     'campus': fields.Nested(campus_nested, required=True, allow_null=True, description='Campus'),
-    'username': fields.String(required=True, description='Username')
+    'username': fields.String(required=True, description='Username'),
+    'first_name': fields.String(required=True, description="First name"),
+    'last_name': fields.String(required=True, description="Last name")
 })
 
 user_full_resource = api.inherit('User full resource', user_resource, {
