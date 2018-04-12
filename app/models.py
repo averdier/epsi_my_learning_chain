@@ -185,6 +185,86 @@ class Campus(IOTAAccount):
     description = db.StringField(default='')
     files = db.ListField(db.ReferenceField(File))
 
+    @property
+    def projects(self):
+        """
+        Return projects
+        """
+        return Project.objects(campus=self)
+
+    def add_file(self, data):
+        """
+        Add file to campus
+        """
+        base_path = os.path.join(current_app.config['UPLOAD_BASE'], str(self.id))
+        pathlib.Path(base_path).mkdir(parents=False, exist_ok=True)
+
+        if allowed_file(current_app.config['ALLOWED_EXTENSIONS'], data.filename):
+            base_name = secure_filename(data.filename)
+            name = get_name_without_extension(base_name)
+            extension = get_extension(base_name)
+            path = os.path.join(base_path, base_name)
+
+            data.save(path)
+
+            f = File(
+                name=name,
+                extension=extension,
+                path=path
+            )
+            f.save()
+            self.files.append(f)
+
+        else:
+            raise Exception('Extension not allowed')
+
+    def remove_file(self, file):
+        """
+        Remove file
+        """
+        if file in self.files:
+            try:
+                if os.path.exists(file.path):
+                    os.remove(file.path)
+            except:
+                pass
+
+            self.files.remove(file)
+            file.delete()
+
+    def delete(self):
+        """
+        Delete campus
+        """
+        base_path = os.path.join(current_app.config['UPLOAD_BASE'], str(self.id))
+        if os.path.exists(base_path):
+            try:
+                shutil.rmtree(base_path, ignore_errors=True)
+            except:
+                pass
+
+        super().delete()
+
+
+class Section(db.Document):
+    """
+    Section model
+    """
+    created_at = db.DateTimeField(default=datetime.now())
+    campus = db.ReferenceField(Campus, required=True)
+    year = db.IntField(required=True)
+    name = db.StringField(required=True)
+
+
+class Project(db.Document):
+    """
+    Project model
+    """
+    created_at = db.DateTimeField(default=datetime.now())
+    campus = db.ReferenceField(Campus, required=True)
+    name = db.StringField(required=True)
+    files = db.ListField(db.ReferenceField(File))
+
     def add_file(self, data):
         """
         Add file to project
@@ -237,25 +317,6 @@ class Campus(IOTAAccount):
                 pass
 
         super().delete()
-
-
-class Section(db.Document):
-    """
-    Section model
-    """
-    created_at = db.DateTimeField(default=datetime.now())
-    campus = db.ReferenceField(Campus, required=True)
-    year = db.IntField(required=True)
-    name = db.StringField(required=True)
-
-
-class Project(db.Document):
-    """
-    Project model
-    """
-    created_at = db.DateTimeField(default=datetime.now())
-    campus = db.ReferenceField(Campus, required=True)
-    name = db.StringField(required=True)
 
     @property
     def groups(self):

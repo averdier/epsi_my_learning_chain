@@ -33,3 +33,8 @@ file_nested = api.model('File nested', {
     'name': fields.String(required=True, description='Filename'),
     'extension': fields.String(required=True, description='Extension')
 })
+
+project_nested = api.model('Project nested', {
+    'id': fields.String(required=True, description='Project ID'),
+    'name': fields.String(required=True, description='Name')
+})

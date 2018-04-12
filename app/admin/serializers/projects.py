@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from flask_restplus import fields
-from .nested import group_nested
+from .nested import group_nested, file_nested
 from .. import api
 
 project_post_model = api.model('Project POST model', {
@@ -19,7 +19,8 @@ project_minimal_model = api.model('Project minimal model', {
 })
 
 project_model = api.inherit('Project model', project_minimal_model, {
-    'groups': fields.List(fields.Nested(group_nested), required=True, description='Groups list')
+    'groups': fields.List(fields.Nested(group_nested), required=True, description='Groups list'),
+    'files': fields.List(fields.Nested(file_nested), required=True, description='Files list')
 })
 
 project_container = api.model('Project container', {

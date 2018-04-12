@@ -4,7 +4,8 @@ from flask import request, g
 from flask_restplus import Namespace, Resource, abort
 from .. import auth
 from ..serializers.projects import project_model, project_container, project_post_model, project_patch_model
-from app.models import Project, Campus
+from ..parsers import upload_parser
+from app.models import Project, Campus, File
 
 ns = Namespace('projects', description='Projects related operations')
 
@@ -99,3 +100,53 @@ class ProjectItem(Resource):
         p.delete()
 
         return 'Project successfully deleted', 204
+
+
+@ns.route('/<id>/upload')
+@ns.response(404, 'Project not found')
+class ProjectItemUploader(Resource):
+    decorators = [auth.login_required]
+
+    @ns.marshal_with(project_model)
+    @ns.expect(upload_parser)
+    def post(self, id):
+        """
+        Upload file
+        """
+        p = Project.objects.get_or_404(id=id)
+
+        args = upload_parser.parse_args()
+        data = args['file']
+
+        try:
+            p.add_file(data)
+            p.save()
+
+            return p
+
+        except Exception as ex:
+            abort(400, error='{0}'.format(ex))
+
+
+@ns.route('/<id>/upload/<uid>')
+@ns.response(404, 'Project not found')
+class ProjectItemUpload(Resource):
+    decorators = [auth.login_required]
+
+    @ns.response(204, 'File successfully deleted')
+    def delete(self, id, uid):
+        """
+        Delete file
+        """
+        p = Project.objects.get_or_404(id=id)
+        f = File.objects.get_or_404(id=uid)
+
+        try:
+            p.remove_file(f)
+
+            p.save()
+
+            return 'File successfully deleted', 204
+
+        except Exception as ex:
+            abort(400, error='{0}'.format(ex))
